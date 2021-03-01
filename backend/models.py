@@ -33,9 +33,9 @@ class Question(db.Model):
     __tablename__ = 'questions'
 
     id = Column(Integer, primary_key=True)
-    question = Column(String)
+    question = Column(String, nullable=False)
     answer = Column(String)
-    category = Column(String)
+    category = Column(String, nullable=False)
     difficulty = Column(Integer)
 
     def __init__(self, question, answer, category, difficulty):
