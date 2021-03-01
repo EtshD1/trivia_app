@@ -1,10 +1,12 @@
+from logging import error
 import os
 from flask import Flask, request, abort, jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+import sys
 import random
 
-from models import setup_db, Question, Category
+from models import setup_db, Question, Category, db
 
 QUESTIONS_PER_PAGE = 10
 
@@ -13,21 +15,42 @@ def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__)
     setup_db(app)
+    db.init_app(app)
 
     '''
-  @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
-  '''
-
+    @TODO: Set up CORS. Allow '*' for origins. Delete the sample route after completing the TODOs
     '''
-  @TODO: Use the after_request decorator to set Access-Control-Allow
-  '''
-
+    cors = CORS(app, resources={r'/api/*': {"origins": "*"}})
     '''
-  @TODO: 
-  Create an endpoint to handle GET requests 
-  for all available categories.
-  '''
-
+    @TODO: Use the after_request decorator to set Access-Control-Allow
+    '''
+    @app.after_request
+    def after_request(response):
+        response.headers.add('Access-Control-Allow-Headers',
+                             'Content-Type,Authorization,true')
+        response.headers.add('Access-Control-Allow-METHODS',
+                             'GET,PATCH,POST,DELETE,OPTIONS')
+        return response
+    '''
+    @TODO: 
+    Create an endpoint to handle GET requests 
+    for all available categories.
+    '''
+    @app.route('/categories')
+    def get_categories():
+        try:
+            query = Category.query.all()
+            if len(query) > 0:
+                categories = [category.format() for category in query]
+                return jsonify({'success': True, 'total_categories': len(categories), 'categories': categories})
+            else:
+                return jsonify({'success': False, 'error': 404, 'message': "Categories not found. Database might be empty."}), 404
+        except:
+            db.session.rollback()
+            print(sys.exc_info())
+            abort(500)
+        finally:
+            db.session.close()
     '''
   @TODO: 
   Create an endpoint to handle GET requests for questions, 
