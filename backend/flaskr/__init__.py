@@ -97,7 +97,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:Done
+    # TODO:Done
     # Create an endpoint to DELETE question using a question ID.
 
     # TEST: When you click the trash icon next to a question, the question will be removed.
@@ -120,7 +120,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:Done
+    # TODO:Done
     # Create an endpoint to POST a new question,
     # which will require the question and answer text,
     # category, and difficulty score.
@@ -152,7 +152,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:Done
+    # TODO:Done
     # Create a POST endpoint to get questions based on a search term.
     # It should return any questions for whom the search term
     # is a substring of the question.
@@ -212,7 +212,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:Done
+    # TODO:Done
     # Create a POST endpoint to get questions to play the quiz.
     # This endpoint should take category and previous question parameters
     # and return a random questions within the given category,
@@ -241,10 +241,31 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-      #   '''
-      # @TODO:
-      # Create error handlers for all expected errors
-      # including 404 and 422.
-      # '''
+    # TODO:Done
+    # Create error handlers for all expected errors
+    # including 404 and 422.
+    @app.errorhandler(404)
+    def not_found(error):
+        return jsonify({
+            "success": False,
+            "error": 404,
+            "message": "Not found"
+        }), 404
+
+    @app.errorhandler(400)
+    def bad_request(error):
+        return jsonify({
+            "success": False,
+            "error": 400,
+            "message": "Bad Request"
+        }), 400
+
+    @app.errorhandler(500)
+    def internal_error(error):
+        return jsonify({
+            "success": False,
+            "error": 500,
+            "message": "Internal Server Error. Please try again later"
+        }), 500
 
     return app
