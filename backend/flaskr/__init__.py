@@ -97,7 +97,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:
+    # @TODO:Done
     # Create an endpoint to DELETE question using a question ID.
 
     # TEST: When you click the trash icon next to a question, the question will be removed.
@@ -120,7 +120,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:
+    # @TODO:Done
     # Create an endpoint to POST a new question,
     # which will require the question and answer text,
     # category, and difficulty score.
@@ -152,7 +152,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:
+    # @TODO:Done
     # Create a POST endpoint to get questions based on a search term.
     # It should return any questions for whom the search term
     # is a substring of the question.
@@ -175,7 +175,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:
+    # @TODO:Done
     # Create a GET endpoint to get questions based on category.
 
     # TEST: In the "List" tab / main screen, clicking on one of the
@@ -212,7 +212,7 @@ def create_app(test_config=None):
         finally:
             db.session.close()
 
-    # @TODO:
+    # @TODO:Done
     # Create a POST endpoint to get questions to play the quiz.
     # This endpoint should take category and previous question parameters
     # and return a random questions within the given category,
