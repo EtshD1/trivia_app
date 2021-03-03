@@ -42,7 +42,7 @@ class TriviaTestCase(unittest.TestCase):
 
     def test_post_question(self):
         jsonData = {'question': 'testing',
-                    'category': 'Entertainment',
+                    'category': 1,
                     'difficulty': 10,
                     'answer': 'Test should work'}
         res = self.client().post('/questions', json=jsonData)
