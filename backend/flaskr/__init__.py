@@ -59,9 +59,12 @@ def create_app(test_config=None):
     def get_categories():
         try:
             query = Category.query.order_by(Category.id).all()
+            objectedCategories = {}
+            for c in query:
+                objectedCategories[c.id] = c.type
             if len(query) > 0:
                 categories = [category.format() for category in query]
-                return jsonify({'success': True, 'total_categories': len(categories), 'categories': categories})
+                return jsonify({'success': True, 'total_categories': len(categories), 'categories': objectedCategories})
             else:
                 return jsonify({'success': False, 'error': 404, 'message': "Categories not found. Database might be empty."}), 404
         except:
@@ -89,7 +92,14 @@ def create_app(test_config=None):
 
             questionList = paginate(request, query)
 
-            return jsonify({'success': True, 'total_questions': len(query), 'questions': questionList})
+            categories = Category.query.all()
+            objectedCategories = {}
+            for c in categories:
+                objectedCategories[c.id] = c.type
+            return jsonify({'success': True,
+                            'total_questions': len(query),
+                            'questions': questionList,
+                            'categories': objectedCategories})
         except:
             db.session.rollback()
             print(sys.exc_info())
@@ -103,7 +113,7 @@ def create_app(test_config=None):
     # TEST: When you click the trash icon next to a question, the question will be removed.
     # This removal will persist in the database and when you refresh the page.
 
-    @app.route('/questions/<int:question_id>', methods=['DELETE'])
+    @ app.route('/questions/<int:question_id>', methods=['DELETE'])
     def delete_question(question_id):
         try:
             query = Question.query.get(question_id)
@@ -128,7 +138,7 @@ def create_app(test_config=None):
     # TEST: When you submit a question on the "Add" tab,
     # the form will clear and the question will appear at the end of the last page
     # of the questions list in the "List" tab.
-    @app.route('/questions', methods=['POST'])
+    @ app.route('/questions', methods=['POST'])
     def create_question():
         try:
             body = request.get_json()
@@ -142,7 +152,9 @@ def create_app(test_config=None):
                     question=question, category=category, difficulty=difficulty, answer=answer)
                 newQuestion.insert()
                 allQuestionQuery = Question.query.all()
-                return jsonify({'success': True, 'total_questions': len(allQuestionQuery), 'question': newQuestion.format()})
+                return jsonify({'success': True,
+                                'total_questions': len(allQuestionQuery),
+                                'question': newQuestion.format()})
             else:
                 abort(400)
         except:
@@ -160,10 +172,11 @@ def create_app(test_config=None):
     # TEST: Search by any phrase. The questions list will update to include
     # only question that include that string within their question.
     # Try using the word "title" to start.
-    @app.route('/questions/search', methods=['POST'])
+    @ app.route('/questions/search', methods=['POST'])
     def search_questions():
         try:
             search_term = request.get_json().get("search_term")
+            print(search_term)
             query = Question.query.filter(Question.question.ilike(
                 "%"+search_term+"%")).order_by(Question.id).all()
             questions = [question.format() for question in query]
@@ -181,15 +194,14 @@ def create_app(test_config=None):
     # TEST: In the "List" tab / main screen, clicking on one of the
     # categories in the left column will cause only questions of that
     # category to be shown.
-    @app.route('/categories/<int:cat_id>')
+    @ app.route('/categories/<int:cat_id>')
     def find_by_category(cat_id):
         try:
             category_query = Category.query.get(cat_id)
-            name = category_query.type
             if category_query:
 
                 questionQuery = Question.query.filter(
-                    Question.category == name).order_by(Question.id).all()
+                    Question.category == category_query.id).order_by(Question.id).all()
                 questions = []
 
                 for q in questionQuery:
@@ -199,8 +211,9 @@ def create_app(test_config=None):
 
                 return jsonify({
                     "success": True,
-                    "category": name,
-                    "questions": questions
+                    "category": category_query.type,
+                    "questions": questions,
+                    'total_questions': len(questions)
                 })
 
             else:
@@ -221,7 +234,7 @@ def create_app(test_config=None):
     # TEST: In the "Play" tab, after a user selects "All" or a category,
     # one question at a time is displayed, the user is allowed to answer
     # and shown whether they were correct or not.
-    @app.route('/quiz', methods=['POST'])
+    @ app.route('/quiz', methods=['POST'])
     def quiz():
         try:
             body = request.get_json()
@@ -230,10 +243,30 @@ def create_app(test_config=None):
                 return jsonify({'success': True, 'question': questionsQuery[random.randrange(len(questionsQuery))].format()})
 
             category = body.get('category', None)
-            if category == None or category == 'all':
-                questionsQuery = Question.query.filter(
-                    Question.id != body.get('question_id', None)).all()
-                return jsonify({'success': True, 'question': questionsQuery[random.randrange(len(questionsQuery))].format()})
+            previousQuestions = body.get('previousQuestions', [])
+            if category == None:
+                questionsQuery = Question.query.all()
+                qList = [q.format() for q in questionsQuery]
+                for i in previousQuestions:
+                    for q in qList:
+                        if q['id'] == i:
+                            qList.remove(q)
+                if len(qList) == 0:
+                    return jsonify({'success': True, 'forceEnd': True})
+                else:
+                    return jsonify({'success': True, 'question': qList[random.randrange(len(qList))]})
+            else:
+                questionsQuery = Question.query.filter_by(
+                    category=category).all()
+                qList = [q.format() for q in questionsQuery]
+                for i in previousQuestions:
+                    for q in qList:
+                        if q['id'] == i:
+                            qList.remove(q)
+                if len(qList) == 0:
+                    return jsonify({'success': True, 'forceEnd': True})
+                else:
+                    return jsonify({'success': True, 'question': qList[random.randrange(len(qList))]})
         except:
             db.session.rollback()
             print(sys.exc_info())
@@ -244,7 +277,7 @@ def create_app(test_config=None):
     # TODO:Done
     # Create error handlers for all expected errors
     # including 404 and 422.
-    @app.errorhandler(404)
+    @ app.errorhandler(404)
     def not_found(error):
         return jsonify({
             "success": False,
@@ -252,7 +285,7 @@ def create_app(test_config=None):
             "message": "Not found"
         }), 404
 
-    @app.errorhandler(400)
+    @ app.errorhandler(400)
     def bad_request(error):
         return jsonify({
             "success": False,
@@ -260,7 +293,7 @@ def create_app(test_config=None):
             "message": "Bad Request"
         }), 400
 
-    @app.errorhandler(500)
+    @ app.errorhandler(500)
     def internal_error(error):
         return jsonify({
             "success": False,
