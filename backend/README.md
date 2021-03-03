@@ -27,7 +27,7 @@ Setting the `FLASK_APP` variable to `flaskr` directs flask to use the `flaskr` d
 
 ## Endpoints
 
-Every endpoint has 
+Every endpoint has a `success` variable inside that states if the request was processed successfully or not.
 
 ### GET '/categories':
 - Request Arguments: None
@@ -58,7 +58,15 @@ Every endpoint has
 - Request Arguments: None
 - Returns: An object with the new total_questions count after deletion
 
-
+## Error Handling
+If a error occurs, and object would be sent with the info about the error. ex:
+```json
+{
+  "success": false,
+  "error": 404,
+  "message": "Not found"
+}
+```
 
 ## Testing
 To run the tests, run
