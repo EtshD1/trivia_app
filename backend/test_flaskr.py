@@ -52,7 +52,7 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['success'])
         self.assertTrue(data['total_questions'] > 0)
 
-    def test_get_question(self):
+    def test_get_questions(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
 
