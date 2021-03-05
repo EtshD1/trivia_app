@@ -55,6 +55,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['success'])
         self.assertTrue(data['total_questions'] > 0)
 
+    def test_fail_post_question(self):
+        res = self.client().post('/questions')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
+
     def test_get_questions(self):
         res = self.client().get('/questions')
         data = json.loads(res.data)
@@ -65,13 +72,23 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['total_questions'] > 0)
 
     def test_delete_question(self):
-        id = 3
+        seek = self.client().get(f'/questions')
+        prevData = json.loads(seek.data)
+        id = prevData['questions'][0]['id']
+
         res = self.client().delete(f'/questions/{id}')
         data = json.loads(res.data)
 
         self.assertEqual(res.status_code, 200)
         self.assertTrue(data['success'])
         self.assertTrue(data['total_questions'])
+
+    def test_fail_delete_question(self):
+        res = self.client().delete(f'/questions/100000000')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
 
     def test_search(self):
         search_term = {'searchTerm': "testing"}
@@ -82,6 +99,13 @@ class TriviaTestCase(unittest.TestCase):
         self.assertTrue(data['success'])
         self.assertTrue(data['total_matches'])
         self.assertTrue(data['questions'])
+
+    def test_fail_search(self):
+        res = self.client().post('/questions/search')
+        data = json.loads(res.data)
+
+        self.assertEqual(res.status_code, 400)
+        self.assertFalse(data['success'])
 
 
 # Make the tests conveniently executable
