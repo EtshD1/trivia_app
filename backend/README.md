@@ -8,7 +8,7 @@ To start up this project, please make sure that python is installed, as well as 
 - [SQLAlchemy](https://www.sqlalchemy.org/) is the Python SQL toolkit and ORM will be used to handle the database interactions.
 - [Flask-CORS](https://flask-cors.readthedocs.io/en/latest/#) is the extension used to handle cross origin requests from our frontend server. 
 
-## Database Setup
+### Database Setup
 With Postgres running, restore a database using the trivia.psql file provided. From the backend folder in terminal run:
 ```bash
 psql trivia < trivia.psql
