@@ -122,7 +122,7 @@ def create_app(test_config=None):
 
             allQuestionQuery = Question.query.all()
 
-            return jsonify({'success': True, 'total_questions': len(allQuestionQuery)})
+            return jsonify({'success': True, 'id': question_id, 'total_questions': len(allQuestionQuery)})
         except:
             db.session.rollback()
             print(sys.exc_info())
