@@ -70,7 +70,7 @@ def create_app(test_config=None):
         except:
             db.session.rollback()
             print(sys.exc_info())
-            abort(500)
+            abort(400)
         finally:
             db.session.close()
 
@@ -103,7 +103,7 @@ def create_app(test_config=None):
         except:
             db.session.rollback()
             print(sys.exc_info())
-            abort(500)
+            abort(400)
         finally:
             db.session.close()
 
@@ -126,7 +126,7 @@ def create_app(test_config=None):
         except:
             db.session.rollback()
             print(sys.exc_info())
-            abort(500)
+            abort(400)
         finally:
             db.session.close()
 
@@ -160,7 +160,7 @@ def create_app(test_config=None):
         except:
             db.session.rollback()
             print(sys.exc_info())
-            abort(500)
+            abort(400)
         finally:
             db.session.close()
 
@@ -183,7 +183,7 @@ def create_app(test_config=None):
         except:
             db.session.rollback()
             print(sys.exc_info())
-            abort(500)
+            abort(400)
         finally:
             db.session.close()
 
@@ -220,7 +220,7 @@ def create_app(test_config=None):
         except:
             db.session.rollback()
             print(sys.exc_info())
-            abort(500)
+            abort(400)
         finally:
             db.session.close()
 
@@ -269,7 +269,7 @@ def create_app(test_config=None):
         except:
             db.session.rollback()
             print(sys.exc_info())
-            abort(500)
+            abort(400)
         finally:
             db.session.close()
 
