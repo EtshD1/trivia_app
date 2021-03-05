@@ -175,8 +175,7 @@ def create_app(test_config=None):
     @ app.route('/questions/search', methods=['POST'])
     def search_questions():
         try:
-            search_term = request.get_json().get("search_term")
-            print(search_term)
+            search_term = request.get_json().get("searchTerm")
             query = Question.query.filter(Question.question.ilike(
                 "%"+search_term+"%")).order_by(Question.id).all()
             questions = [question.format() for question in query]
